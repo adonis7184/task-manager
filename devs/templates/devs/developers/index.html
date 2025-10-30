@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Developer List
+{% endblock %}
+
+{% block content %}
+  <a href="{% url 'devs:developer_create' %}">create a new member</a>
+  {% if developers %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Birthday</th>
+          <th>Phone Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for developer in developers %}
+          <tr>
+            <td>
+              <a href="{% url 'devs:developer_detail' developer.id %}">{{ developer.name }}</a>
+            </td>
+            <td>{{ developer.gender }}</td>
+            <td>{{ developer.birthday }}</td>
+            <td>{{ developer.phone_number }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Sorry, there is no developers in this list.</p>
+  {% endif %}
+{% endblock %}

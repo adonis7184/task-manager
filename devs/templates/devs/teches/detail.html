@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Tech
+{% endblock %}
+
+{% block content %}
+  <a href="{% url 'devs:tech_list' %}">back</a>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="update" />
+    <input type="submit" name="delete" value="delete" />
+  </form>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load i18n static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+        My Site
+      {% endblock %}
+    </title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'devs/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'devs/css/devs_style.css' %}" />
+  </head>
+  <body>
+    <!-- Common navbar -->
+    <header class="flex-between">
+      <nav>
+        <a href="/devs/developers" class="color-red">Home</a> |
+        <a href="/devs/developers">Developers</a> |
+        <a href="/devs/teams">Teams</a> |
+        <a href="/devs/teches">Teches</a>
+      </nav>
+      {% comment %} {% if user.is_active %}
+        <nav>
+          <form id="logout-form" method="post" action="{% url 'devs:logout' %}">
+            {% csrf_token %}
+            <button type="submit">{% translate 'Log out' %}</button>
+          </form>
+        </nav>
+      {% endif %} {% endcomment %}
+    </header>
+
+    <!-- Page-specific content -->
+    <main class="h-80">
+      {% block content %}
+
+      {% endblock %}
+    </main>
+
+    <!-- Common footer -->
+    <footer>
+      <p>&copy; 2025 Tech Manager</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Team List
+{% endblock %}
+
+{% block content %}
+  <a href="{% url 'devs:team_create' %}">create a new team</a>
+  {% if teams %}
+    <ul>
+      {% for team in teams %}
+        <li>
+          <a href="{% url 'devs:team_detail' team.id %}">{{ team.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

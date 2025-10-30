@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Tech List
+{% endblock %}
+
+{% block content %}
+  <a href="{% url 'devs:tech_create' %}">create a new tech</a>
+  {% if teches %}
+    <ul>
+      {% for tech in teches %}
+        <li>
+          <a href="{% url 'devs:tech_detail' tech.id %}">{{ tech.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
