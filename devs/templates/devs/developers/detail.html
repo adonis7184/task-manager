@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Developer
+{% endblock %}
+
+{% block content %}
+  {% if developer %}
+    <ul>
+      <li>{{ developer.name }}</li>
+      <li>{{ developer.birthday }}</li>
+      <li>{{ developer.gender }}</li>
+      {% comment %}
+      <li>{{ developer.name }}</li>
+      <li>{{ developer.name }}</li>
+      {% endcomment %}
+    </ul>
+  {% endif %}
+{% endblock %}

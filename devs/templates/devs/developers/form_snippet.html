@@ -1,0 +1,6 @@
+<h2>Custom Form</h2>
+{% for field in form %}
+  <div class="fieldWrapper">{{ field.errors }}
+    {{ field.label_tag|ljust:'10' }}
+    {{ field }}</div>
+{% endfor %}
