@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yvone-nonexpectant-woefully.ngrok-free.dev', 'localhost']
 
 
 # Application definition
@@ -184,3 +184,10 @@ AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')  # Replace with your bucket
 # Optional: public-read files
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True  
+
+
+DATABASE_ROUTERS = ['devs.db_router.DevsRouter']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://yvone-nonexpectant-woefully.ngrok-free.dev"
+]
