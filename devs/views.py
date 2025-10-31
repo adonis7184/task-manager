@@ -21,7 +21,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
+from celery import shared_task
 
+@shared_task
 def send_welcome_email(user_email, image):
     subject = "Welcome!"
     text_content = "Welcome to our site."
@@ -60,7 +62,7 @@ class DeveloperCreateView(SingleObjectMixin, View):
                 form = DeveloperForm(data=req.POST, files=req.FILES, instance=developer)
 
             form.save()
-            # send_welcome_email('adonis7184@gmail.com')
+            # send_welcome_email.delay('adonis7184@gmail.com')
 
         else:
             template_name = 'devs/developers/create.html'
@@ -99,9 +101,10 @@ def create_team(request):
 
         if form.is_valid():
             name, teches = itemgetter('name', 'teches')(form.cleaned_data)
-            
+
             team = Team.objects.create(name=name)
             team.teches.set(teches)
+            send_welcome_email.delay('adonis7184@gmail.com', '1234')
 
             # send_mail(subject, message, sender, recipients)
 
