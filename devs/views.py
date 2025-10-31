@@ -1,7 +1,8 @@
-from django.shortcuts import render
-
-# Create your views here.
 import time
+import json
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -20,11 +21,13 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
+from celery import shared_task
 
-def send_welcome_email(user_email):
+@shared_task
+def send_welcome_email(user_email, image):
     subject = "Welcome!"
     text_content = "Welcome to our site."
-    html_content = "<p>Welcome to <strong>our site</strong> 🎉<a href='http://localhost:8000/devs/developers'>go to site<a></p>"
+    html_content = f"{image} uploaded!"
 
     msg = EmailMultiAlternatives(
         subject, text_content, settings.DEFAULT_FROM_EMAIL, [user_email]
@@ -59,7 +62,7 @@ class DeveloperCreateView(SingleObjectMixin, View):
                 form = DeveloperForm(data=req.POST, files=req.FILES, instance=developer)
 
             form.save()
-            send_welcome_email('adonis7184@gmail.com')
+            # send_welcome_email.delay('adonis7184@gmail.com')
 
         else:
             template_name = 'devs/developers/create.html'
@@ -91,16 +94,17 @@ class TeamIndexView(generic.ListView):
     template_name = 'devs/teams/index.html'
     context_object_name = 'teams'    
 
-@login_required(login_url='/devs/login')
+# @login_required(login_url='/devs/login')
 def create_team(request):
     if request.method == 'POST':
         form = TeamForm(request.POST)
 
         if form.is_valid():
             name, teches = itemgetter('name', 'teches')(form.cleaned_data)
-            
+
             team = Team.objects.create(name=name)
             team.teches.set(teches)
+            send_welcome_email.delay('adonis7184@gmail.com', '1234')
 
             # send_mail(subject, message, sender, recipients)
 
@@ -112,7 +116,7 @@ def create_team(request):
 
     return render(request, template_name, {'form': form})
 
-@login_required(login_url='/devs/login')
+# @login_required(login_url='/devs/login')
 def edit_team(request, pk):
     before_time = time.time()
 
@@ -160,7 +164,7 @@ class TechIndexView(generic.ListView):
     template_name = 'devs/teches/index.html'
     context_object_name = 'teches'
 
-@login_required(login_url='/devs/login')
+# @login_required(login_url='/devs/login')
 def create_tech(request):
     TechFormSet = formset_factory(TechForm, extra=2)
     if request.method == 'POST':
@@ -182,7 +186,7 @@ def create_tech(request):
 
     return render(request, template_name, {'form': formsets})
 
-@login_required(login_url='/devs/login')
+# @login_required(login_url='/devs/login')
 def edit_tech(request, pk):
     tech = get_object_or_404(Tech, pk=pk)
 
@@ -248,3 +252,15 @@ class MyRegister(SingleObjectMixin, View):
 class MyLogout(LogoutView):
     def get_redirect_url(self):
         return reverse('devs:login')
+    
+@csrf_exempt
+def s3_upload_notify(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # Example: process info about uploaded file
+        filename = data.get("filename")
+        bucket = data.get("bucket")
+        print(f"Received notification: {bucket}/{filename}")
+        send_welcome_email('adonis7184@gmail.com', f"{bucket}/{filename}")
+        return JsonResponse({"status": "received"})
+    return JsonResponse({"error": "POST request required"}, status=400)

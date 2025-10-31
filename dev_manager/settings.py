@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yvone-nonexpectant-woefully.ngrok-free.dev', 'localhost']
 
 
 # Application definition
@@ -41,8 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'devs.apps.DevsConfig',
-    'storages'
+    'storages',
+    
+    # allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', 
+    'allauth.socialaccount.providers.github', 
 ]
 
 MIDDLEWARE = [
@@ -53,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'dev_manager.urls'
@@ -184,3 +193,24 @@ AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')  # Replace with your bucket
 # Optional: public-read files
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True  
+
+
+DATABASE_ROUTERS = ['devs.db_router.DevsRouter']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://yvone-nonexpectant-woefully.ngrok-free.dev"
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
+]
+
+SITE_ID = 1
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+LOGIN_REDIRECT_URL = '/devs/developers'
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"  # or your Redis URL
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"

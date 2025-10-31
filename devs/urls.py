@@ -22,6 +22,7 @@ urlpatterns = [
 
     # testing
     path('auto-escape', views.autoescape, name='auto_escape'),
+    path('api/s3-upload-notify/', views.s3_upload_notify),
 
     # auth
     # path('login', views.MyLogin.as_view(), name='login'),
