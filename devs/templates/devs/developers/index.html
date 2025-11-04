@@ -9,12 +9,19 @@
   {% if developers %}
     <table>
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Gender</th>
-          <th>Birthday</th>
-          <th>Phone Number</th>
-        </tr>
+        {% load i18n %}
+        <th>
+          {% trans 'Name' %}
+        </th>
+        <th>
+          {% trans 'Gender' %}
+        </th>
+        <th>
+          {% trans 'Birthday' %}
+        </th>
+        <th>
+          {% trans 'Phone Number' %}
+        </th>
       </thead>
       <tbody>
         {% for developer in developers %}

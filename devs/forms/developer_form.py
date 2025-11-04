@@ -39,7 +39,6 @@ class IntlTelInputWidget(forms.TextInput):
         return mark_safe(f"{input_html}{js}")
 
 class DeveloperForm(forms.ModelForm):
-    # template_name = "tasks/developers/form_snippet.html"
 
     class Meta:
         model = Developer

@@ -21,14 +21,14 @@
         <a href="/devs/teams">Teams</a> |
         <a href="/devs/teches">Teches</a>
       </nav>
-      {% comment %} {% if user.is_active %}
+      {% if user.is_active %}
         <nav>
-          <form id="logout-form" method="post" action="{% url 'devs:logout' %}">
+          <form id="logout-form" method="post" action="{% url 'account_logout' %}">
             {% csrf_token %}
             <button type="submit">{% translate 'Log out' %}</button>
           </form>
         </nav>
-      {% endif %} {% endcomment %}
+      {% endif %}
     </header>
 
     <!-- Page-specific content -->

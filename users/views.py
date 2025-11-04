@@ -1,23 +1,49 @@
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.shortcuts import render, redirect
 
-class SignUpView(CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')  # Redirect to login after successful signup
-    template_name = 'authentication/signup.html'
+# Create your views here.
+from .forms import LoginForm, RegisterForm
 
-class DevLoginView(LoginView):
-    authentication_form = AuthenticationForm
-    template_name = 'authentication/login.html'
-    next_page = reverse_lazy('home') # Redirect to home page after successful login
+User = get_user_model()
 
-class DevLogoutView(LogoutView):
-    next_page = reverse_lazy('login') # Redirect to login page after logout
+def register_view(request):
+    form = RegisterForm(request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data.get("username")
+        email = form.cleaned_data.get("email")
+        password = form.cleaned_data.get("password1")
+        password2 = form.cleaned_data.get("password2")
+        try:
+            user = User.objects.create_user(username, email, password)
+        except:
+            user = None
+        if user != None:
+            login(request, user)
+            return redirect("/")
+        else:
+            request.session['register_error'] = 1 # 1 == True
+    return render(request, "forms.html", {"form": form})
 
-class DevPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
-    form_class = PasswordChangeForm
-    success_url = reverse_lazy('password_change_done') # Redirect to a success page
-    template_name = 'authentication/password_change.html'
+
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user != None:
+            # user is valid and active -> is_active
+            # request.user == user
+            login(request, user)
+            return redirect("/")
+        else:
+            # attempt = request.session.get("attempt") or 0
+            # request.session['attempt'] = attempt + 1
+            # return redirect("/invalid-password")
+            request.session['invalid_user'] = 1 # 1 == True
+    return render(request, "forms.html", {"form": form})
+
+def logout_view(request):
+    logout(request)
+    # request.user == Anon User
+    return redirect("/login")
