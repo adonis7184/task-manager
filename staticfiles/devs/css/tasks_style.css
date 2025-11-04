@@ -1,0 +1,11 @@
+.color-red {
+    color: red;
+}
+
+[class*=flex] {
+    display: flex;
+}
+
+.flex-between {
+    justify-content: space-between;
+}

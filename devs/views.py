@@ -45,14 +45,14 @@ from .forms.user_form import UserForm
 # from django.template.loaders.cached.Loader
 
 # Developers
-class DeveloperIndexView(generic.ListView):
-    # login_url = '/devs/login'
+class DeveloperIndexView(LoginRequiredMixin, generic.ListView):
+    login_url = '/accounts/login'
     model = Developer
     template_name = 'devs/developers/index.html'
     context_object_name = 'developers'
 
-class DeveloperCreateView(SingleObjectMixin, View):
-    # login_url = '/devs/login'
+class DeveloperCreateView(LoginRequiredMixin, SingleObjectMixin, View):
+    login_url = '/accounts/login'
     def post(self, req, *args, **kwargs):
         form = DeveloperForm(req.POST, req.FILES)
         if form.is_valid():
@@ -81,20 +81,20 @@ class DeveloperCreateView(SingleObjectMixin, View):
 
         return render(req, template_name, {'form': form})
 
-class DeveloperDetailView(generic.DeleteView):
-    # login_url = '/devs/login'
+class DeveloperDetailView(LoginRequiredMixin, generic.DeleteView):
+    login_url = '/accounts/login'
     model = Developer
     template_name = 'devs/developers/detail.html'
     context_object_name = 'developer'
 
 # Teams
-class TeamIndexView(generic.ListView):
-    # login_url = '/devs/login'
+class TeamIndexView(LoginRequiredMixin, generic.ListView):
+    login_url = '/accounts/login'
     model = Team
     template_name = 'devs/teams/index.html'
     context_object_name = 'teams'    
 
-# @login_required(login_url='/devs/login')
+@login_required(login_url='/accounts/login')
 def create_team(request):
     if request.method == 'POST':
         form = TeamForm(request.POST)
@@ -116,7 +116,7 @@ def create_team(request):
 
     return render(request, template_name, {'form': form})
 
-# @login_required(login_url='/devs/login')
+@login_required(login_url='/accounts/login')
 def edit_team(request, pk):
     before_time = time.time()
 
@@ -151,20 +151,20 @@ def edit_team(request, pk):
 
     return render(request, template_name, {'form': form})
 
-class TeamDetailView(generic.DetailView):
-    # login_url = '/devs/login'
+class TeamDetailView(LoginRequiredMixin, generic.DetailView):
+    login_url = '/accounts/login'
     model = Team
     template_name = 'devs/teams/detail.html'
     context_object_name = 'team'    
 
 # Teches
-class TechIndexView(generic.ListView):
-    # login_url = '/devs/login'
+class TechIndexView(LoginRequiredMixin, generic.ListView):
+    login_url = '/accounts/login'
     model = Tech
     template_name = 'devs/teches/index.html'
     context_object_name = 'teches'
 
-# @login_required(login_url='/devs/login')
+@login_required(login_url='/accounts/login')
 def create_tech(request):
     TechFormSet = formset_factory(TechForm, extra=2)
     if request.method == 'POST':
@@ -186,7 +186,7 @@ def create_tech(request):
 
     return render(request, template_name, {'form': formsets})
 
-# @login_required(login_url='/devs/login')
+@login_required(login_url='/accounts/login')
 def edit_tech(request, pk):
     tech = get_object_or_404(Tech, pk=pk)
 
